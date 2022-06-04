@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<input type="button" value="login" onclick='location.href=("login")'>
+<input type="button" value="register" onclick='location.href=("register")'>
+</br></br>
+
+<h1>Search</h1>
+<form method="post">
+    book name<br>
+    <input type="text" name="book_name" required><br><br>
+    <input class="btn" type="submit" name="submit" value="Submit">
+</form>
+
+
+<p>{{ Books|length }} Books</p>
+<ul class="book">
+    {% for book in Books%}
+    <li>{{book.name}} - {{book.author}}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
