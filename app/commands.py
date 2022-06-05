@@ -1,6 +1,6 @@
 import click
 from app import app, db
-from app.models import Admin 
+from app.models import Admin, Book
 
 
 @app.cli.command()
@@ -16,13 +16,14 @@ def initdb(drop):
 @app.cli.command()
 def forge():
     """Generate fake book data."""
-#    db.create_all()
-
-#    name = 'Grey Li'
-#    user = User(name=name)
-#    db.session.add(user)
-
-#    db.session.commit()
+    books = [
+        {'id':1, 'title':'数据库系统概论', 'author':'王珊'},
+        {'id':2, 'title':'随机过程', 'author':'方兆本'}
+    ]
+    for book in books:
+        B = Book(id=book['id'], title=book['title'], author=book['author'])
+        db.session.add(B)
+    db.session.commit()
     click.echo('Done.')
 
 

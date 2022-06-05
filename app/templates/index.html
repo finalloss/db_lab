@@ -8,15 +8,15 @@
 <h1>Search</h1>
 <form method="post">
     book name<br>
-    <input type="text" name="book_name" required><br><br>
+    <input type="text" name="book_title" required><br><br>
     <input class="btn" type="submit" name="submit" value="Submit">
 </form>
 
 
-<p>{{ Books|length }} Books</p>
+<p>{{ books|length }} books</p>
 <ul class="book">
-    {% for book in Books%}
-    <li>{{book.name}} - {{book.author}}
+    {% for book in books%}
+    <li>{{book.title}} - {{book.author}}
     </li>
     {% endfor %}
 </ul>

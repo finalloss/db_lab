@@ -10,9 +10,9 @@ from app.models import Admin, Borrower, Book
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':    # 暂时只能搜书名
-        book_name = request.form['book_name']
-        all_book = Book.query.filter_by(name=book_name).all()
-        render_template('index.html', Books=all_book)
+        book_title = request.form['book_title']
+        all_book = Book.query.filter_by(title=book_title).all()
+        return render_template('index.html', books=all_book)
     else:
         return render_template('index.html')
 
