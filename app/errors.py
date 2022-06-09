@@ -5,6 +5,7 @@ from app import app
 
 @app.errorhandler(400)
 def bad_request(e):
+    print(e)
     return render_template('errors/400.html'), 400
 
 

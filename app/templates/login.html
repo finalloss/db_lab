@@ -1,13 +1,164 @@
 {% extends 'base.html' %}
 
+<link rel="stylesheet" href="{{ url_for('static', filename='font-awesome-4.7.0/css/font-awesome.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-5.0.0-beta1-dist/css/bootstrap.min.css') }}">
+<script src="{{ url_for('static', filename='bootstrap-5.0.0-beta1-dist/js/bootstrap.min.js') }}"></script>
+<style>
+    body {
+		font-family: 'Varela Round', sans-serif;
+	}
+	.modal-login {
+		width: 350px;
+		margin: 30px auto;
+	}
+	.modal-login .modal-content {
+		padding: 20px;
+		border-radius: 5px;
+		border: none;
+	}
+	.modal-login .modal-header {
+		border-bottom: none;
+        position: relative;
+		justify-content: center;
+	}
+	.modal-login .close {
+        position: absolute;
+		top: -10px;
+		right: -10px;
+	}
+	.modal-login h4 {
+		color: #636363;
+		text-align: center;
+		font-size: 26px;
+		margin-top: 0;
+	}
+	.modal-login .modal-content {
+		color: #999;
+		border-radius: 1px;
+    	margin-bottom: 15px;
+        background: #fff;
+		border: 1px solid #f3f3f3;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        padding: 25px;
+    }
+	.modal-login .form-group {
+		margin-bottom: 20px;
+	}
+	.modal-login label {
+		font-weight: normal;
+		font-size: 13px;
+	}
+	.modal-login .form-control {
+		min-height: 38px;
+		padding-left: 5px;
+		box-shadow: none !important;
+		border-width: 0 0 1px 0;
+		border-radius: 0;
+	}
+	.modal-login .form-control:focus {
+		border-color: #ccc;
+	}
+	.modal-login .input-group-addon {
+		max-width: 42px;
+		text-align: center;
+		background: none;
+		border-width: 0 0 1px 0;
+		padding-left: 5px;
+		border-radius: 0;
+	}
+    .modal-login .btn {
+        font-size: 16px;
+        font-weight: bold;
+		background: #19aa8d;
+        border-radius: 3px;
+		border: none;
+		min-width: 140px;
+        outline: none !important;
+    }
+	.modal-login .btn:hover, .modal-login .btn:focus {
+		background: #179b81;
+	}
+	.modal-login .hint-text {
+		text-align: center;
+		padding-top: 5px;
+		font-size: 13px;
+	}
+	.modal-login .modal-footer {
+		color: #999;
+		border-color: #dee4e7;
+		text-align: center;
+		margin: 0 -25px -25px;
+		font-size: 13px;
+		justify-content: center;
+	}
+	.modal-login a {
+		color: #fff;
+		text-decoration: underline;
+	}
+	.modal-login a:hover {
+		text-decoration: none;
+	}
+	.modal-login a {
+		color: #19aa8d;
+		text-decoration: none;
+	}
+	.modal-login a:hover {
+		text-decoration: underline;
+	}
+	.modal-login .fa {
+		font-size: 21px;
+	}
+	.trigger-btn {
+		display: inline-block;
+		margin: 100px auto;
+	}
+</style>
 {% block content %}
-<h3>Login</h3>
-<form method="post">
-    id<br>
-    <input type="text" name="id" required><br><br>
-    Password<br>
-    <!-- 密码输入框的 type 属性使用 password，会将输入值显示为圆点 -->
-    <input type="password" name="password" required><br><br>
-    <input class="btn" type="submit" name="submit" value="Submit">
+<form class="loginForm form-style" style="width:500px;margin:200px auto" method="post" action="/login" accept-charset="UTF-8">
+  <!--账户-->
+  <legend>登录</legend>
+    <br>
+  <div class="group" title>
+    <label for="id" class="form-label">id</label>
+    <input type="text"
+           class="input-box"
+           id="id"
+           aria-describedby="Help"
+           name="id"
+           size="30"
+           placeholder="please input your id"
+           required
+    >
+    <span class="bar">
+    </span>
+  </div>
+  <!--密码-->
+    <br>
+  <div class="group" id="pd" title>
+    <label for="password" class="form-label">password</label>
+    <input type="password"
+           class="input-box"
+           id="password"
+           name="password"
+           size="30"
+           value placeholder="if it is the first time for you to login in or you forget your password,please click 'find back'"
+           onfocus="this.placeholder=''"
+           onblur="this.placeholder='if it is the first time for you to login in or you forget your password,please click find_back'"
+           mark="password" required
+    >
+      <br>
+  <button type="submit" class="btn btn-primary">LOGIN IN</button>
+    <br>
+  <div class="loginActions">
+	<span class="loginActionText">New to the library?</span>
+      <br>
+	<span class="loginActionScreenOnly"><a href="/register">Create an account</a></span>
+	<span class="loginActionSeparator"></span>
+      <br>
+	<span class="loginActionScreenOnly"><a href="/passwordreset">Forgot Your Password?</a></span>
+	<span class="loginActionSeparator"></span>
+      <br>
+	<span class="loginAction"><a href="/">Home</a></span>
+      </div>
 </form>
 {% endblock %}

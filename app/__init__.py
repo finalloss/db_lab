@@ -1,6 +1,3 @@
-import os
-import sys
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -12,13 +9,23 @@ app.config['SECRET_KEY'] = "hard to guess"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'   # 访问一些页面时，将未登录用户重定向到登录页面
+
+
+login_manager.login_view = 'index'   # 在未登录用户访问受保护的页面时，将其重定向到主页
 login_manager.login_message = '请登录'  # 同时显示提示信息
+
+
 @login_manager.user_loader
-def load_user(user_id):
-    return None
+def load_user(user_info):
+    from app.models import Admin, Borrower
+    admin = Admin.query.get(user_info)  # 按照主键查询
+    borrower = Borrower.query.get(user_info)
+    if admin != None:
+        return admin
+    else:
+        return borrower
+
 
 # migrate = Migrate(app, db)
 # bootstrap = Bootstrap(app)

@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     {% block head %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>title</title>
+    <title>Bigdata Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-5.0.0-beta1-dist/css/bootstrap.min.css') }}">
     {% endblock %}
+    <script src="{{ url_for('static', filename='bootstrap-5.0.0-beta1-dist/js/bootstrap.min.js') }}"></script>
 </head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('index') }}">Home</a></li>
-        </ul>
-    </nav>
+
+<body background="{{ url_for('static', filename='img/library1.jpg') }}">
+
+    {% for message in get_flashed_messages() %}
+     	<div class="alert">{{ message }}</div>
+    {% endfor %}
+
     {% block content %}{% endblock %}
+
+<script src="{{ url_for('static', filename='bootstrap-5.0.0-beta1-dist/js/bootstrap.min.js') }}"></script>
 </body>
+
 </html>
