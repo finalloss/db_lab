@@ -10,3 +10,4 @@ venv
 env
 app/static
 app/templates
+tm_template
