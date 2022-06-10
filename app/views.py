@@ -11,9 +11,13 @@ from app.models import Admin, Borrower, Book
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':    # 暂时只能搜书名
-        book_title = request.form['book_title']
-        all_book = Book.query.filter_by(title=book_title).all()
-        return render_template('index.html', books=all_book)
+        keyword = request.form['keyword']
+        books = Book.query.all()
+        pt = '.*' + str(keyword) + '.*'
+        for book in books:
+            if re.search(pt, books.title) == None:  # 即书名与关键词对应模式串匹配
+                books.remove(book)
+        return redirect(url_for('search_result', books=books))
     else:
         return render_template('index.html')
 
@@ -152,8 +156,9 @@ def alter_book(book_id):
 
 
 # 返回查询结果，即对应图书信息
-@app.route('/book/search/result', methods=['GET', 'POST'])
-def search_result(keyword):
+@app.route('/search_result', methods=['GET', 'POST'])
+def search_result():
+    keyword = request.form['keyword']
     books = Book.query.all()
     pt = '.*' + str(keyword) + '.*'
     for book in books:
