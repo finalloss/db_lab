@@ -2,7 +2,7 @@
 from flask import render_template, request, url_for, redirect, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy import or_, and_
-from re
+import re
 
 from app import app, db
 from app.models import Admin, Borrower, Book
@@ -13,14 +13,29 @@ from app.models import Admin, Borrower, Book
 def index():
     if request.method == 'POST':    # 暂时只能搜书名
         keyword = request.form['keyword']
-        books = Book.query.all()
-        pt = '.*' + str(keyword) + '.*'
-        for book in books:
-            if re.search(pt, books.title) == None:  # 即书名与关键词对应模式串匹配
-                books.remove(book)
-        return redirect(url_for('search_result', books=books))
+        return redirect(url_for('search_result', keyword=keyword))
     else:
         return render_template('index.html')
+
+
+# 返回查询结果，即对应图书信息
+@app.route('/search/result/<keyword>', methods=['GET', 'POST'])
+def search_result(keyword):
+    # 分页
+    page = request.args.get('page', default=1, type=int)
+    pagination = Book.query.filter(Book.name.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
+    posts = pagination.items
+
+    if request.method == 'POST':
+        # 分页
+        keyword = request.form['keyword']
+        page = request.args.get('page', default=1, type=int)
+        pagination = Book.query.filter(Book.name.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
+        posts = pagination.items
+
+        return render_template('search_result.html', pagination=pagination, books=books)
+    else:
+        return render_template('search_result.html', pagination=pagination, books=books)
 
 
 # 几个处理注册、登录的视图函数
@@ -93,10 +108,10 @@ def register():
 
 
 # 图书主页，读者可以通过图书主页预约图书，管理员可以修改图书信息
-@app.route('/book/<int:book_id>/index', methods=['POST'])
-def book(book_id):
-    book = Book.query.get_or_404(book_id)
-    return render_template('book.html', book=book)
+@app.route('/book/index', methods=['POST', 'GET'])
+def book():
+    books = Book.query.all()
+    return render_template('bookexact.html', books=books)
 
 
 # 执行预约图书的操作
@@ -144,25 +159,28 @@ def add_book():
 
 
 # 管理员可以修改已有图书信息
-@app.route('/book/<int:book_id>/alter', methods=['POST'])
+@app.route('/book/<int:book_id>/edit', methods=['POST', 'GET'])
 @login_required
-def alter_book(book_id):
+def edit_book(book_id):
+    book = Book.query.get(book_id)
+    if request.method == 'POST':
+        db.session.delete(book)
+        total = book.total
+        B = Book(id=book_id, title=request.form['title'], author=request.form['author'], total=total, publisher=request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf'])
+        db.session.add(B)
+        db.session.commit()
+        flash('book altered')
+        return redirect(url_for('book'))
+    else:
+        return render_template('edit_book.html', book=book)
+
+
+# 管理员可以删除图书信息
+@app.route('/book/<int:book_id>/delete', methods=['POST'])
+@login_required
+def delete(book_id):
     book = Book.query.get(book_id)
     db.session.delete(book)
-    B = Book(id=book_id, title=request.form['title'], author=request.form['author'], total=request.form['total'], publisher=request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf'])
-    db.session.add(B)
     db.session.commit()
-    flash('book altered')
-    return redirect(url_for('book'))
-
-
-# 返回查询结果，即对应图书信息
-@app.route('/search_result', methods=['GET', 'POST'])
-def search_result():
-    keyword = request.form['keyword']
-    books = Book.query.all()
-    pt = '.*' + str(keyword) + '.*'
-    for book in books:
-        if re.search(pt, books.title) == None:  # 即书名与关键词对应模式串匹配
-            books.remove(book)
-    return render_template('search_result.html', books=books)
+    flash('book deleted')
+    return redirect(url_for('index'))
