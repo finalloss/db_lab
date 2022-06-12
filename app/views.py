@@ -5,7 +5,7 @@ from sqlalchemy import or_, and_
 import re
 
 from app import app, db
-from app.models import Admin, Borrower, Book
+from app.models import Admin, Borrower, Book, Borrowing_record, Booking_record
 
 
 # 在主页提供搜索功能
@@ -23,19 +23,19 @@ def index():
 def search_result(keyword):
     # 分页
     page = request.args.get('page', default=1, type=int)
-    pagination = Book.query.filter(Book.name.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
-    posts = pagination.items
+    pagination = Book.query.filter(Book.title.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
+    books = pagination.items
 
     if request.method == 'POST':
         # 分页
         keyword = request.form['keyword']
         page = request.args.get('page', default=1, type=int)
         pagination = Book.query.filter(Book.name.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
-        posts = pagination.items
+        books = pagination.items
 
-        return render_template('search_result.html', pagination=pagination, books=books)
+        return render_template('search_result.html', pagination=pagination, books=books, keyword=keyword)
     else:
-        return render_template('search_result.html', pagination=pagination, books=books)
+        return render_template('search_result.html', pagination=pagination, books=books, keyword=keyword)
 
 
 # 几个处理注册、登录的视图函数
@@ -115,33 +115,76 @@ def book():
 
 
 # 执行预约图书的操作
-@app.route('/book/<int:book_id>/booking', methods=['POST'])
+@app.route('/book_book/int:book_id>/<int:borrower_id>/<url>/<keyword>', methods=['POST'])
 @login_required
-def book_book(book_id, borrower_id):
+def book_book(book_id, borrower_id, url, keyword):
     book = Book.query.get_or_404(book_id)
-    booking_record = Booking_record(id_borrower=borrower_id, id_book=borrower_id)
-    db.session.add(booking_record)
-    db.session.commit()
-    flash('booking successfully')
-    return redirect(url_for('/book/<int:book_id>/book'))
-
-
-# 读者有个人主页，可以通过个人主页查看借阅和预约的图书，也可以取消预约
-@app.route('/borrower/index', methods=['GET'])
-@login_required
-def borrower():
-    return render_template('borrower.html')
+    booking_record = Booking_record(id_borrower=borrower_id, id_book=book_id)
+    if book.total == 0:
+        flash('no enough book')
+    elif Booking_record.query.get((borrower_id, book_id)) != None:
+        flash('不能重复预约！')
+    else:    
+        book.total = book.total - 1
+        db.session.add(booking_record)
+        db.session.commit()
+        flash('booking successfully')
+    return redirect(url_for(str(url), keyword=keyword))
 
 
 # 执行取消预约操作
-@app.route('/book/<int:book_id>/unbooking', methods=['POST'])
+@app.route('/unbook/<int:book_id>/<int:borrower_id>/<url>/<keyword>', methods=['POST'])
 @login_required
-def unbook(book_id, borrower_id):
-    booking_record = Booking_record(id_borrower=borrower_id, id_book=borrower_id)
-    db.session.delete(booking_record)
-    db.session.commit()
-    flash('unbooking successfully')
-    return redirect(url_for('index'))
+def unbook(book_id, borrower_id, url, keyword):
+    if Booking_record.query.get_or_404((borrower_id, book_id)) == None:
+        pass
+    else:
+        booking_record = Booking_record(id_borrower=borrower_id, id_book=borrower_id)
+        db.session.delete(booking_record)
+        db.session.commit()
+        flash('unbooking successfully')
+    return redirect(url_for(str(url), keyword=keyword))
+
+
+
+# 读者有个人主页，可以通过个人主页查看借阅和预约的图书等信息
+@app.route('/personal_page/<int:borrower_id>', methods=['GET'])
+@login_required
+def personal_page(borrower_id):
+    records = Borrowing_record.query.filter_by(id_borrower=borrower_id).all()
+    for record in records:
+        for k, v in Book.query.get(record.id_book).__dict__:
+            if k == 'id':
+                pass
+            else:
+                setattr(record, k, v)
+        for k, v in Borrower.query.get(record.id_borrower).__dict__:
+            if k == 'id':
+                pass
+            else:
+                setattr(record, k, v)
+    return render_template('borrower.html', person=record)
+
+
+# 管理员有个人主页，可以通过个人主页查看借阅和预约的图书等信息
+@app.route('/admin_page/<int:admin_id>', methods=['GET'])
+@login_required
+def admin_page(admin_id):
+    records = Borrowing_record.query.all()
+    for record in records:
+        for k, v in Book.query.get(record.id_book).__dict__:
+            if k == 'id':
+                pass
+            else:
+                setattr(record, k, v)
+        for k, v in Borrower.query.get(record.id_borrower).__dict__:
+            if k == 'id':
+                pass
+            else:
+                setattr(record, k, v)
+        for k, v in Admin.query.get(id=admin_id):
+            setattr(record, k, v)
+    return render_template('admin_page.html', admin=record)
 
 
 # 管理员可以增加新的图书，暂时没有其他导入图书的接口
@@ -175,12 +218,12 @@ def edit_book(book_id):
         return render_template('edit_book.html', book=book)
 
 
-# 管理员可以删除图书信息
-@app.route('/book/<int:book_id>/delete', methods=['POST'])
+# 执行删除图书的操作
+@app.route('/delete_book/<int:book_id>/<url>/<keyword>', methods=['POST'])
 @login_required
-def delete(book_id):
-    book = Book.query.get(book_id)
+def delete(book_id, url, keyword):
+    book = Book.query.get_or_404(book_id)
     db.session.delete(book)
     db.session.commit()
     flash('book deleted')
-    return redirect(url_for('index'))
+    return redirect(url_for(str(url), keyword=keyword))
