@@ -15,6 +15,7 @@ class Book(db.Model):
     total = db.Column(db.Integer, nullable=False)  # 书的数量
     publisher = db.Column(db.String(50), nullable=False)  # 出版社
     type = db.Column(db.String(50), nullable=False)  # 类型
+    img_name = db.Column(db.String(128), default='default_img.jpg')
     subarea_shelf = db.Column(db.String(50))  # 分区-书架号
     
 
@@ -49,12 +50,13 @@ class Admin(db.Model, UserMixin):
 class Borrower(db.Model, UserMixin):
     __tablename__ = 'Borrower'
 
-    id = db.Column(db.Integer, unique=True, nullable=False)    # id
-    email=db.Column(db.String(50), primary_key=True)  # 邮箱号
+    id = db.Column(db.Integer, primary_key=True, nullable=False)    # id
+    email=db.Column(db.String(50), unique=True)  # 邮箱号
     ID_number = db.Column(db.String(20), unique=True, nullable=False)  # 身份证号
     name = db.Column(db.String(30), nullable=False) # 姓名
-    number_of_viola = db.Column(db.Integer, nullable=False) # 违约次数
+    number_of_viola = db.Column(db.Integer, nullable=False, default=0) # 违约次数
     phone = db.Column(db.String(20))  # 电话号
+    is_admin = db.Column(db.Boolean, default=False) # tag
     password_hash = db.Column(db.String(128), nullable=False)
 
     def __repr__(self):

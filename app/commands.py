@@ -1,6 +1,6 @@
 import click
 from app import app, db
-from app.models import Admin, Book
+from app.models import Admin, Book, Booking_record, Borrowing_record, Borrower
 
 
 @app.cli.command()
@@ -70,7 +70,20 @@ def forge():
     for book in books:
         B = Book(id=book['id'], title=book['title'], author=book['author'], total=book['total'], publisher=book['publisher'], type=book['type'], subarea_shelf=book['subarea_shelf'])
         db.session.add(B)
+
+    borrower = Borrower(id=10001, email='zjyang@mail.ustc.edu.cn', name='yzj', ID_number='123')
+    borrower.set_password('123456')
+    db.session.add(borrower)
     db.session.commit()
+
+    bor_record = Borrowing_record(id_book=1, id_borrower=10001)
+    bor_record_1 = Borrowing_record(id_book=2, id_borrower=10001)
+    booking_record = Booking_record(id_book=2, id_borrower=10001)
+    db.session.add(bor_record)
+    db.session.add(bor_record_1)
+    db.session.add(booking_record)
+    db.session.commit()
+
     click.echo('Done.')
 
 
