@@ -172,7 +172,7 @@ def unbook(book_id, borrower_id):
     if Booking_record.query.get_or_404((borrower_id, book_id)) == None:
         flash('booking record not found')
     else:
-        booking_record = Booking_record.query.get((borrower_id, borrower_id))   
+        booking_record = Booking_record.query.get((borrower_id, book_id))   
         book.total = book.total + 1
         db.session.delete(booking_record)
         db.session.commit()
@@ -189,6 +189,7 @@ def personal_page(borrower_id):
             Borrower.id==Borrowing_record.id_borrower, Borrower.id==borrower_id)).all()
     boo_results =  db.session.query(Book, Borrower, Booking_record).filter(and_(Book.id==Booking_record.id_book, \
             Borrower.id==Booking_record.id_borrower, Borrower.id==borrower_id)).all()
+    borrower = db.session.query(Borrower).filter(Borrower.id==Borrower_id).all()
     return render_template('borrower.html', bor_results=bor_results, boo_results=boo_results)
 
 
@@ -208,7 +209,7 @@ def admin_page(admin_id):
 @app.route('/book/add', methods=['GET', 'POST'])
 @login_required
 def add_book():
-    if request.methed == 'POST':
+    if request.method == 'POST':
         img = request.files.get('image')
         img_name = image_upload(img)
         if img_name == None:
