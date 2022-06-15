@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_dropzone import Dropzone
 from urllib.parse import urlparse, urljoin
-
+from flask import request, redirect
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:123456@localhost/DBS_lab"

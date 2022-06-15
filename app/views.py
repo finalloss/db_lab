@@ -31,7 +31,7 @@ def search_result(keyword):
         # 分页
         keyword = request.form['keyword']
         page = request.args.get('page', default=1, type=int)
-        pagination = Book.query.filter(Book.name.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
+        pagination = Book.query.filter(Book.title.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
         books = pagination.items
 
         return render_template('search_result.html', pagination=pagination, books=books, keyword=keyword)
@@ -78,7 +78,7 @@ def login():
 
 
 # 忘记密码
-@app.route('/resetPassword', methods=['GET', 'POST'])
+@app.route('/passwordreset', methods=['GET', 'POST'])
 def reset_password():
     if request.method == 'POST':
         email = request.form['email']
@@ -87,11 +87,11 @@ def reset_password():
         phone = request.form['phone']
         password = request.form['password']
 
-        borrower = db.session.query(Borrower).filter(and_(Borrower.email==email, Borrower.name=name,\
+        borrower = db.session.query(Borrower).filter(and_(Borrower.email==email, Borrower.name==name,\
                 Borrower.ID_number==ID_number, Borrower.phone==phone)).first()
         if borrower == None:
             flash('personal information not found')
-            render_template('reset_password.html')
+            render_template('passwordreset.html')
         else:
             pass
 
@@ -100,7 +100,7 @@ def reset_password():
         flash('password reset successfully')
         return redirect(url_for('login'))
     else:
-        render_template('reset_password.html')
+        render_template('passwordreset.html')
 
 
 # 登出
@@ -137,16 +137,16 @@ def register():
 
 
 # 图书主页，读者可以通过图书主页预约图书，管理员可以修改图书信息
-@app.route('/book/<int:book_id>', methods=['GET'])
+@app.route('/book/<int:book_id>', methods=['GET','POST'])
 def exact_book(book_id):
     book = Book.query.get_or_404(book_id)
     return render_template('bookexact.html', book=book)
 
 
 # 执行预约图书的操作
-@app.route('/book_book/int:book_id>/<int:borrower_id>', methods=['POST'])
+@app.route('/book_book/<int:book_id>/<int:borrower_id>', methods=['POST'])
 @login_required
-def book_book(book_id, borrower_id, keyword):
+def book_book(book_id, borrower_id):
     book = Book.query.get_or_404(book_id)
     booking_record = Booking_record(id_borrower=borrower_id, id_book=book_id)
 
@@ -168,11 +168,10 @@ def book_book(book_id, borrower_id, keyword):
 @login_required
 def unbook(book_id, borrower_id):
     book = Book.query.get_or_404(book_id)
-
     if Booking_record.query.get_or_404((borrower_id, book_id)) == None:
         flash('booking record not found')
     else:
-        booking_record = Booking_record.query.get((borrower_id, book_id))   
+        booking_record = Booking_record.query.get((borrower_id, book_id))
         book.total = book.total + 1
         db.session.delete(booking_record)
         db.session.commit()
@@ -189,8 +188,8 @@ def personal_page(borrower_id):
             Borrower.id==Borrowing_record.id_borrower, Borrower.id==borrower_id)).all()
     boo_results =  db.session.query(Book, Borrower, Booking_record).filter(and_(Book.id==Booking_record.id_book, \
             Borrower.id==Booking_record.id_borrower, Borrower.id==borrower_id)).all()
-    borrower = db.session.query(Borrower).filter(Borrower.id==Borrower_id).all()
-    return render_template('borrower.html', bor_results=bor_results, boo_results=boo_results)
+    borrower = db.session.query(Borrower).filter(Borrower.id == borrower_id).all()
+    return render_template('borrower.html',borrower = borrower, bor_results=bor_results, boo_results=boo_results)
 
 
 # 管理员有个人主页，可以通过个人主页查看借阅和预约的图书等信息
@@ -210,8 +209,8 @@ def admin_page(admin_id):
 @login_required
 def add_book():
     if request.method == 'POST':
-        img = request.files.get('image')
-        img_name = image_upload(img)
+        img = request.files['image']
+        img_name = img_upload(img)
         if img_name == None:
             return 'invalid image', 400
         else:
@@ -220,11 +219,12 @@ def add_book():
         id = Book.query.count() + 1
 
         B = Book(id=id, title=request.form['title'], author=request.form['author'], total=request.form['total'], \
-                publisher=request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf']\
-                img_name=img_name)
+                publisher=request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf'],\
+                img_name = img_name)
         db.session.add(B)
         db.session.commit()
         flash('adding book successfully')
+        return redirect(url_for('add_book'))
     else:
         return render_template('add_book.html')
 
@@ -237,8 +237,8 @@ def edit_book(book_id):
     if request.method == 'POST':
         db.session.delete(book)
 
-        img = request.files.get('image')
-        img_name = image_upload(img)
+        img = request.files['image']
+        img_name = img_upload(img)
         if img_name == None:
             return 'invalid image', 400
         else:
@@ -246,7 +246,7 @@ def edit_book(book_id):
 
         total = book.total
         B = Book(id=book_id, title=request.form['title'], author=request.form['author'], total=total, publisher=\
-                request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf']\
+                request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf'],\
                 img_name=img_name)
         db.session.add(B)
         db.session.commit()
@@ -265,3 +265,11 @@ def delete(book_id):
     db.session.commit()
     flash('book deleted')
     return redirect_back('/deleteBook/'+str(book_id))
+
+@app.route('/guideadmin', methods=['GET', 'POST']) # 借阅人注册
+def guideadmin():
+    return render_template('guideadmin.html')
+
+@app.route('/guide', methods=['GET', 'POST']) # 借阅人注册
+def guide():
+    return render_template('guide.html')
