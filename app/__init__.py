@@ -4,20 +4,19 @@ import random
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_dropzone import Dropzone
 from urllib.parse import urlparse, urljoin
 from flask import request, redirect
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:123456@localhost/DBS_lab"
 app.config['SECRET_KEY'] = "hard to guess"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = os.path.abspath(os.path.dirname(__file__)) + '/static/file/img'
-app.config['DROPZONE_ALLOWED_FILE_TYPE'] = 'image'
+app.config['UPLOAD_FOLDER'] = os.path.abspath(os.path.dirname(__file__)) + '/static/img'
+
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
-dropzone = Dropzone(app)
 # migrate = Migrate(app, db)
 # bootstrap = Bootstrap(app)
 
@@ -46,7 +45,7 @@ def img_upload(img):
         return None
 
     now_time = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-    filename = str(nowtime) + str(img.filename)
+    filename = str(now_time) + str(img.filename)
     img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     img.save(img_path)
 
@@ -69,4 +68,3 @@ def is_safe_url(target):
 
 
 from app import models, views, errors, commands
-

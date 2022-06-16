@@ -97,10 +97,10 @@ def reset_password():
 
         borrower.set_password(password)
         db.session.commit()
-        flash('password reset successfully')
+        flash('password reset')
         return redirect(url_for('login'))
     else:
-        render_template('passwordreset.html')
+        return render_template('passwordreset.html')
 
 
 # 登出
@@ -219,8 +219,7 @@ def add_book():
         id = Book.query.count() + 1
 
         B = Book(id=id, title=request.form['title'], author=request.form['author'], total=request.form['total'], \
-                publisher=request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf'],\
-                img_name = img_name)
+                publisher=request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf']) 
         db.session.add(B)
         db.session.commit()
         flash('adding book successfully')
