@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+             <img src="{{ url_for('static', filename='img/bigdataico.ico') }}" alt="Logo" style="width:40px;">
+            BigData Library</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guideadmin">guide</a>
+                </li>
+                {% endif %}
+
+                {% if current_user.is_authenticated and not current_user.is_admin %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guide">guide</a>
+                </li>
+                {% endif %}
+
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guide">guide</a>
+                </li>
+                {% endif %}
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('search_result', keyword='_') }}">book</a>
+                </li>
+            </ul>
+                  <form class="d-flex" method="post">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <ul class="nav navbar-nav navbar-right">
+              {% set adminurl = current_user.id|string %}
+                <li><a class="nav-link" href="{{ url_for('admin_page', admin_id = current_user.id) }}">管理员中心</a></li>
+                <li><a class="nav-link" href="/logout">退出登录</a></li>
+            </ul>
+            {% endif %}
+
+            {% if current_user.is_authenticated and not current_user.is_admin %}
+            <ul class="nav navbar-nav navbar-right">
+              {% set personurl = current_user.id|string %}
+                <li><a class="nav-link" href="{{ url_for('personal_page', borrower_id = current_user.id) }}">个人中心</a></li>
+                <li><a class="nav-link" href="/logout">退出登录</a></li>
+            </ul>
+            {% endif %}
+
+            {% if not current_user.is_authenticated %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="nav-link" href="/login">login</a></li>
+                <li><a class="nav-link" href="/register">register</a></li>
+            </ul>
+            {% endif %}
+
+        </div>
+    </div>
+</nav>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">guide</li>
+    </ol>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col-12">
+            <h2 class="text-center">读者须知</h2>
+            <p class="lead,fs-5,lh-base">亲爱的读者，欢迎你们来到本市最大的图书馆。我们收录世界上大部分图书，并保证为每一本图书都能为您带来良好的阅读体验，
+                希望您和您的孩子可以阅读愉快！在使用图书馆相关功能时，请各位读者务必遵守以下规则，以确保你们的体验，否则后果自负。</p>
+            <p class="lead,fs-5,lh-base">1.图书馆有许多图书，每本图书有图书编号、图书名、作者、学科主题、中图法分类号、出版社、馆藏量等信息。每本图书分属于不同学科类型，
+                学科类型分类参照《中国图书馆分类法》，并由此对每本图书进行编号，图书的编号唯一确定。图书的图书名可以不唯一，
+                即一个图书馆可以存放多本图书名相同的图书（但编号不同），图书馆拥有的相同图书名的书的数量为对应图书馆藏量。</p>
+            <p class="lead,fs-5,lh-base">
+                2.图书可以由图书借阅人借阅，图书馆需存储每个借阅人的姓名、身份证号、联系电话、工作单位、读者类型、出生日期、Email、累计借阅图书数量以及家庭住址。
+                借阅人由ID唯一确定。借阅人可以办理借读证，并记录办证日期与证件失效日期，证件有效期内借阅人可选择续期证件，证件失效后借阅人需重新办理证件。
+                办理借读证后方可进行图书预定与借阅。图书馆需记录每位借阅人已预约的图书编号、图书名、中图法分类号，并由此由相应图书管理员管理。借阅人有最大可同时借阅书数量，
+                若借阅人已借阅数量达到最大借阅数量，将不被允许继续借阅。借阅人借阅图书前可进行预约操作，每人有最大同时预约图书数量限额，处理同借阅。
+                借阅人预约后，图书将处于“被预约”状态，处于“被预约”状态的图书无法被他人预约或借阅，借阅后图书处于“被借阅”状态。
+                图书预约设定预约有效期，若超过预约日期图书未被对应借阅人借阅，图书自动变为“可借阅”状态，并相应对违约人进行处罚，记录一次违规。
+                图书被借阅后，设置被借阅日期与图书应归还日期，在借阅期限内借阅人有一次续借机会，可以延长借阅期限。
+                超出图书应归还日期记录借阅人违约次数，并开始记录拖欠天数与欠款，图书进入“拖欠归还”状态，欠款按时间分段函数计。
+                若借阅人存在“拖欠归还”状态图书，借阅人证件将被冻结，需在对应图书管理员处缴纳欠款并归还图书后方可解除冻结，对应图书管理员可拨打借阅人电话或发送邮件提醒借阅人。
+                处于冻结状态的借阅人证件无法进行图书预约与借阅操作。
+                若借阅人违约次数达到一定数量，或经过图书管理员提醒而拒不还书者，将被纳入图书馆黑名单，借阅证立即注销并不可再次办理借阅证。
+            </p>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

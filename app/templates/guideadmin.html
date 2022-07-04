@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+             <img src="{{ url_for('static', filename='img/bigdataico.ico') }}" alt="Logo" style="width:40px;">
+            BigData Library</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guideadmin">guide</a>
+                </li>
+                {% endif %}
+
+                {% if current_user.is_authenticated and not current_user.is_admin %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guide">guide</a>
+                </li>
+                {% endif %}
+
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guide">guide</a>
+                </li>
+                {% endif %}
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('search_result', keyword='_') }}">book</a>
+                </li>
+            </ul>
+                  <form class="d-flex" method="post">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <ul class="nav navbar-nav navbar-right">
+              {% set adminurl = current_user.id|string %}
+                <li><a class="nav-link" href="{{ url_for('admin_page', admin_id = current_user.id) }}">管理员中心</a></li>
+                <li><a class="nav-link" href="/logout">退出登录</a></li>
+            </ul>
+            {% endif %}
+
+            {% if current_user.is_authenticated and not current_user.is_admin %}
+            <ul class="nav navbar-nav navbar-right">
+              {% set personurl = current_user.id|string %}
+                <li><a class="nav-link" href="{{ url_for('personal_page', borrower_id = current_user.id) }}">个人中心</a></li>
+                <li><a class="nav-link" href="/logout">退出登录</a></li>
+            </ul>
+            {% endif %}
+
+            {% if not current_user.is_authenticated %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="nav-link" href="/login">login</a></li>
+                <li><a class="nav-link" href="/register">register</a></li>
+            </ul>
+            {% endif %}
+
+        </div>
+    </div>
+</nav>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">guide</li>
+    </ol>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col-12">
+            <h2 class="text-center">管理员须知</h2>
+            <p class="lead,fs-5,lh-base">如果您能发现这条须知，恭喜您，您已经是本市最大的图书馆的管理员之一了。我们图书馆待遇丰厚，拥有五险一金，一周休息三天，全天工作8小时。
+                当然，这也需要您对我们图书馆的贡献。在您使用图书馆相关功能时，请务必遵守以下规则，以确保您的人生安全，否则后果自负。</p>
+            <p class="lead,fs-5,lh-base">1.图书馆有许多图书，每本图书有图书编号、图书名、作者、学科主题、中图法分类号、出版社、馆藏量等信息。每本图书分属于不同学科类型，
+                学科类型分类参照《中国图书馆分类法》，并由此对每本图书进行编号，图书的编号唯一确定。图书的图书名可以不唯一，
+                即一个图书馆可以存放多本图书名相同的图书（但编号不同），图书馆拥有的相同图书名的书的数量为对应图书馆藏量。</p>
+            <p class="lead,fs-5,lh-base">
+                2.同样，图书馆有多名图书管理员，图书管理员通过其教职工ID来标识，图书馆存储每个管理员的姓名、身份证号、联系电话、Email以及家庭住址、所管理的图书学科类型、
+                中图法编号。图书馆还需知道每个管理员开始工作的日期，由此日期可以推知管理员的雇佣期，并每月结算工资。
+            </p>
+            <p class="lead,fs-5,lh-base">
+                3.请您每天确认是否有读者违约，即未及时归还书籍或未缴纳欠款。如果存在读者违约，请您拨打借阅人电话或发送邮件提醒借阅人。
+                当然，每天提醒三次就好，三天后如果借阅人持续违约，我们会按规定处理，您将不会再看见该借阅人的任何有关信息。
+            </p>
+            <p class="lead,fs-5,lh-base">
+                4.相信您也发现了，管理员并没有“忘记密码”这一功能。请千万不要忘记自己的密码，否则后果我们也无法承担。祝好。
+            </p>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post" style="width:700px;margin:100px auto" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col-6">
+            </div>
+            <fieldset>
+                <legend>编辑内容</legend>
+                <div class="mb-3">
+                    title <input type="text" name="title" autocomplete="off" required value="{{ book.title }}">
+                </div>
+                <div class="mb-3">
+                    author <input type="text" name="author" autocomplete="off" required value="{{ book.author }}">
+                </div>
+                <div class="mb-3">
+                    publisher <input type="text" name="publisher" autocomplete="off" required
+                                     value="{{ book.publisher }}">
+                </div>
+                <div class="mb-3">
+                    type <input type="text" name="type" autocomplete="off" required value="{{ book.type }}">
+                </div>
+                <div class="mb-3">
+                    subarea_shelf <input type="text" name="subarea_shelf" autocomplete="off" required
+                                         value="{{ book.subarea_shelf }}">
+                </div>
+                <div>
+                    <label class="form-label">图书图片</label>
+                    <input class="form-control" type="file" name="image">
+                </div>
+
+                <button type="submit" class="btn btn-primary">edit</button>
+            </fieldset>
+</form>
+</div>
+<div class="col">
+</div>
+</div>
+
+
+{% endblock %}

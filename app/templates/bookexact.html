@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<style>
+
+        #btnCenter2{
+        width:100%;
+        height:auto;
+       }
+        #btnCenter2 img{
+            width:400px;
+            height:400px;
+        }
+
+        #btnCenter3{
+        width:100%;
+        height:auto;
+        text-align: center;
+       }
+        #btnCenter3 img{
+            width:200px;
+            height:auto;
+        }
+
+
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+             <img src="{{ url_for('static', filename='img/bigdataico.ico') }}" alt="Logo" style="width:40px;">
+            BigData Library</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guideadmin">guide</a>
+                </li>
+                {% endif %}
+
+                {% if current_user.is_authenticated and not current_user.is_admin %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guide">guide</a>
+                </li>
+                {% endif %}
+
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/guide">guide</a>
+                </li>
+                {% endif %}
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('search_result', keyword='_') }}">book</a>
+                </li>
+            </ul>
+                  <form class="d-flex" method="post">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <ul class="nav navbar-nav navbar-right">
+              {% set adminurl = current_user.id|string %}
+                <li><a class="nav-link" href="{{ url_for('admin_page', admin_id = current_user.id) }}">管理员中心</a></li>
+                <li><a class="nav-link" href="/logout">退出登录</a></li>
+            </ul>
+            {% endif %}
+
+            {% if current_user.is_authenticated and not current_user.is_admin %}
+            <ul class="nav navbar-nav navbar-right">
+              {% set personurl = current_user.id|string %}
+                <li><a class="nav-link" href="{{ url_for('personal_page', borrower_id = current_user.id) }}">个人中心</a></li>
+                <li><a class="nav-link" href="/logout">退出登录</a></li>
+            </ul>
+            {% endif %}
+
+            {% if not current_user.is_authenticated %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="nav-link" href="/login">login</a></li>
+                <li><a class="nav-link" href="/register">register</a></li>
+            </ul>
+            {% endif %}
+
+        </div>
+    </div>
+</nav>
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-1">
+        </div>
+        <div class="col-6">
+            <h1>
+                <span property="v:itemreviewed">{{ book.title }}</span>
+            </h1>
+        </div>
+        <div class="col-1">
+        </div>
+    </div>
+</div>
+<br>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-4" >
+            <div id="image" class=""  >
+                {% set name = 'img/'+ book.img_name|string  %}
+                <img src = "{{ url_for('static', filename=name) }}"
+                      title="" width="300px" height="auto">
+                </a>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div id="info">
+                <span class="pl">作者:</span>{{ book.author }}<br>
+                <span class="pl">出版社：</span>{{ book.publisher }}<br>
+                <span class="pl">类型:</span> {{ book.type }}<br>
+                <span class="pl">分区-书架:</span>{{ book.subarea_shelf }}<br>
+                <span class="pl">馆藏:</span>{{ book.total }}<br>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-1">
+        </div>
+        <div class="col-6">
+            <h5>精彩书评：</h5>
+            <p class="lead,fs-5,lh-base" style="width:900px">不看{{ book.title }}，说明这个人文学造诣和自我修养不足，他理解不了这种内在的阳春白雪的高雅艺术，
+                他只能看到外表的辞藻堆砌，参不透其中深奥的精神内核，他整个人的层次就卡在这里了，只能度过一个相对失败的人生。
+            </p>
+        </div>
+        <div class="col-1">
+        </div>
+    </div>
+</div>
+<br>
+
+
+{% endblock %}

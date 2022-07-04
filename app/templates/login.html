@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-5.0.0-beta1-dist/css/bootstrap.min.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/bookico.ico') }}">
+</head>
+<body>
+<form class="loginForm form-style" method="post" action="/login"
+      accept-charset="UTF-8">
+    <div class="box">
+        <h2>Login</h2>
+        <div class="input-box">
+            <label for="id" class="form-label">id</label>
+            <input type="text"
+                   class="input-box"
+                   id="id"
+                   aria-describedby="Help"
+                   name="id"
+                   size="30"
+                   placeholder="please input your id"
+                   required
+            >
+        </div>
+
+        <div class="input-box">
+            <label for="password" class="form-label">password</label>
+            <input type="password"
+                   class="input-box"
+                   id="password"
+                   name="password"
+                   size="30"
+                   value
+                   placeholder="if it is the first time for you to login in or you forget your password,please click 'find back'"
+                   onfocus="this.placeholder=''"
+                   onblur="this.placeholder='if it is the first time for you to login in or you forget your password,please click find_back'"
+                   mark="password" required
+            >
+        </div>
+
+        <div class="btn-box">
+            <a href="/passwordreset">忘记密码?</a>
+            <div>
+                <button type="submit" class="btn btn-primary">登录</button>
+                <button class="btn"><a href="/register">注册</a></button>
+            </div>
+        </div>
+    </div>
+
+</form>
+<script src="{{ url_for('static', filename='bootstrap-5.0.0-beta1-dist/js/bootstrap.min.js') }}"></script>
+
+</body>
+</html>

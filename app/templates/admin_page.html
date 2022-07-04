@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename='img/bigdataico.ico') }}" alt="Logo" style="width:40px;">
+            BigData Library</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/guideadmin">guide</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('search_result', keyword='_') }}">book</a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="nav-link" href="/">回到主页</a></li>
+                <li><a class="nav-link" href="/logout">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="d-flex align-items-start">
+    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <a class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab"
+           aria-controls="v-pills-home" aria-selected="true">证件信息</a>
+        <a class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" href="#v-pills-profile" role="tab"
+           aria-controls="v-pills-profile" aria-selected="false">当前借阅</a>
+        <a class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" href="#v-pills-messages" role="tab"
+           aria-controls="v-pills-messages" aria-selected="false">预约信息</a>
+
+    </div>
+    <div class="tab-content" id="v-pills-tabContent">
+        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+             aria-labelledby="v-pills-home-tab">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                    </div>
+                    <div class="col-6">
+                        <h4>证件信息：</h4>
+                        <table class="table  table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">管理员姓名</th>
+                                <th scope="col">管理员id</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{{ current_user.name }}</td>
+                                <td>{{ current_user.id }}</td>
+
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                    </div>
+                    <div class="col-6">
+                        <h4>借阅记录：</h4>
+                        <table class="table table-hover">
+                            <thead>
+                            <th scope="col">借阅人姓名</th>
+                            <th scope="col">借阅人id</th>
+                            <th scope="col">借阅书名</th>
+                            <th scope="col">书籍id</th>
+                            <th scope="col">借阅时间</th>
+                            <th scope="col">到期时间</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for bor_result in bor_results %}
+                            <tr>
+                                <td>{{ bor_result[1].name }}</td>
+                                <td>{{ bor_result[1].id }}</td>
+                                <td>{{ bor_result[0].title }}</td>
+                                <td>{{ bor_result[0].id }}</td>
+                                <td>{{ bor_result[2].borrowing_date }}</td>
+                                <td>{{ bor_result[2].returning_date }}</td>
+
+                            </tr>
+                            {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                    </div>
+                    <div class="col-6">
+                        <h4>预约记录：</h4>
+                        <table class="table table-hover">
+                            <thead>
+                            <th scope="col">预约人姓名</th>
+                            <th scope="col">预约人id</th>
+                            <th scope="col">预约书名</th>
+                            <th scope="col">书籍id</th>
+                            <th scope="col">预约时间</th>
+                            <th scope="col">预约过期时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for boo_result in boo_results %}
+                            <tr>
+                                <td>{{ boo_result[1].name }}</td>
+                                <td>{{ boo_result[1].id }}</td>
+                                <td>{{ boo_result[0].title }}</td>
+                                <td>{{ boo_result[0].id }}</td>
+                                <td>{{ boo_result[2].booking_date }}</td>
+                                <td>{{ boo_result[2].borrowing_date }}</td>
+
+                            </tr>
+                            {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

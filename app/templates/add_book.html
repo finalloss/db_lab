@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="post" style="width:700px;margin:100px auto" enctype="multipart/form-data">
+    <div class="col-md-6">
+        <label class="form-label">书名</label>
+        <input type="text" class="form-control" name="title" required>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">作者</label>
+        <input type="text" class="form-control" name="author" required>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">出版社</label>
+        <input type="text" class="form-control" name="publisher" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">分类</label>
+        <input type="text" class="form-control" name="type" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">馆藏量</label>
+        <input type="text" class="form-control" name="total" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">分区-书架号</label>
+        <input type="text" class="form-control" name="subarea_shelf" required>
+    </div>
+    <div>
+        <label class="form-label">图书图片</label>
+        <input class="form-control" type="file" name="image">
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">提交</button>
+    </div>
+</form>
+{% endblock %}

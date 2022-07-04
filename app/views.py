@@ -219,7 +219,8 @@ def add_book():
         id = Book.query.count() + 1
 
         B = Book(id=id, title=request.form['title'], author=request.form['author'], total=request.form['total'], \
-                publisher=request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf']) 
+                publisher=request.form['publisher'], type=request.form['type'], subarea_shelf=request.form['subarea_shelf'],\
+                 img_name=img_name)
         db.session.add(B)
         db.session.commit()
         flash('adding book successfully')
