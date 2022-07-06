@@ -44,7 +44,6 @@
 
             {% if current_user.is_authenticated and current_user.is_admin %}
             <ul class="nav navbar-nav navbar-right">
-              {% set adminurl = current_user.id|string %}
                 <li><a class="nav-link" href="{{ url_for('admin_page', admin_id = current_user.id) }}">管理员中心</a></li>
                 <li><a class="nav-link" href="/logout">退出登录</a></li>
             </ul>
@@ -52,7 +51,6 @@
 
             {% if current_user.is_authenticated and not current_user.is_admin %}
             <ul class="nav navbar-nav navbar-right">
-              {% set personurl = current_user.id|string %}
                 <li><a class="nav-link" href="{{ url_for('personal_page', borrower_id = current_user.id) }}">个人中心</a></li>
                 <li><a class="nav-link" href="/logout">退出登录</a></li>
             </ul>
@@ -89,17 +87,17 @@
                             </div><!-- /input-group -->
                         </div><!-- /.col-lg-4 -->
 
-                        <div class="col-lg-4">
+			<div class="col-lg-4">
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="inputGroupSelect01">分类</label>
-                                <select class="form-select" id="inputGroupSelect01">
+                                <label class="input-group-text">分类</label>
+                                <select class="form-select" name="type">
                                     <option selected>书籍类型</option>
-                                    <option value="1">哲学</option>
-                                    <option value="2">经济</option>
-                                    <option value="3">文学</option>
-                                    <option value="4">数理</option>
-                                    <option value="5">历史</option>
-                                </select>
+                                    <option value="哲学">哲学</option>
+                                    <option value="经济">经济</option>
+                                    <option value="文学">文学</option>
+                                    <option value="数理">数理</option>
+                                    <option value="历史">历史</option>
+                                <lect>
                             </div>
                         </div><!-- /.col-lg-6 -->
                         {% if current_user.is_authenticated and current_user.is_admin%}
