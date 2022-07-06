@@ -29,7 +29,8 @@ def search_result(keyword):
 
     if request.method == 'POST':
         # 分页
-        if request.form.get('type') != None:
+        keyword = request.form['keyword']
+        if request.form.get('type') != "书籍类型":
             type = request.form.get('type')
             pagination = Book.query.filter(and_(Book.title.like('%' + str(keyword) + '%'), Book.type==type)).paginate(page, per_page=5, error_out=False)
         else:

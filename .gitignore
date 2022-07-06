@@ -9,5 +9,4 @@ htmlcov/
 venv
 env
 app/static
-tm_template
 .flaskenv
