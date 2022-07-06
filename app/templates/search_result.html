@@ -82,24 +82,13 @@
                             <div class="input-group">
                                 <form class="d-flex" method="post">
                                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
+
+
                                     <button class="btn btn-outline-success" type="submit">Search</button>
                                 </form>
                             </div><!-- /input-group -->
                         </div><!-- /.col-lg-4 -->
 
-			<div class="col-lg-4">
-                            <div class="input-group mb-3">
-                                <label class="input-group-text">分类</label>
-                                <select class="form-select" name="type">
-                                    <option selected>书籍类型</option>
-                                    <option value="哲学">哲学</option>
-                                    <option value="经济">经济</option>
-                                    <option value="文学">文学</option>
-                                    <option value="数理">数理</option>
-                                    <option value="历史">历史</option>
-                                <lect>
-                            </div>
-                        </div><!-- /.col-lg-6 -->
                         {% if current_user.is_authenticated and current_user.is_admin%}
                         <div class="col-lg-4">
                             <a href="/book/add"><button class="btn btn-success pull-right">add more</button></a>
