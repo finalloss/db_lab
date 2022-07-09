@@ -31,8 +31,8 @@ class Admin(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)    # id
 
     name = db.Column(db.String(30), unique=True, nullable=False) # 姓名
-    # email = db.Column(db.String(50), primary_key=True)  # email
-    # phone = db.Column(db.String(20), unique=True)  # 电话
+    email = db.Column(db.String(50), unique=True)  # email
+    phone = db.Column(db.String(20), unique=True)  # 电话
     is_admin = db.Column(db.Boolean, default=True) # tag
     password_hash = db.Column(db.String(128), nullable=False)
 

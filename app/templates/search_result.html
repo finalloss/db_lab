@@ -168,7 +168,7 @@
                         </table>
                         <div class="col-sm-offset-9">
                             <div class="pagination">
-                                {{ macros.pagination_widget(pagination, '.search_result', keyword=keyword, type=type) }}
+                                {{ macros.pagination_widget(pagination=pagination, type=type, keyword=keyword, endpoint='.search_result') }}
                             </div>
                             </nav>
                         </div>

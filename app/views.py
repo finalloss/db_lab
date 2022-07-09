@@ -13,7 +13,7 @@ from app.models import Admin, Borrower, Book, Borrowing_record, Booking_record
 def index():
     if request.method == 'POST':    # 暂时只能搜书名
         keyword = request.form['keyword']
-        return redirect(url_for('search_result', keyword=keyword))
+        return redirect(url_for('search_result', keyword=keyword, type='书籍类型'))
     else:
         return render_template('index.html')
 
@@ -23,13 +23,13 @@ def index():
 def search_result(keyword, type):
     # 分页
     page = request.args.get('page', default=1, type=int)
-    print(request.form.get('type'))
+    print(type,request.form.get('type'))
+    print(keyword,request.form.get('keyword'))
 
     if type != "书籍类型":
-        type = request.form.get('type')
-        pagination = Book.query.filter(and_(Book.title.like('%' + str(keyword) + '%'), Book.type==type)).paginate(page, per_page=5, error_out=False)
+        pagination = Book.query.filter(and_(Book.title.like('%' + str(keyword) + '%'), Book.type==type)).paginate(page=page, per_page=5, error_out=False)
     else:
-        pagination = Book.query.filter(Book.title.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
+        pagination = Book.query.filter(Book.title.like('%' + str(keyword) + '%')).paginate(page=page, per_page=5, error_out=False)
 
     books = pagination.items
 
@@ -42,9 +42,10 @@ def search_result(keyword, type):
         page = request.args.get('page', default=1, type=int)
         if request.form.get('type') != "书籍类型":
             type = request.form.get('type')
-            pagination = Book.query.filter(and_(Book.title.like('%' + str(keyword) + '%'), Book.type==type)).paginate(page, per_page=5, error_out=False)
+            pagination = Book.query.filter(and_(Book.title.like('%' + str(keyword) + '%'), Book.type==type)).paginate(page=page, per_page=5, error_out=False)
         else:
             pagination = Book.query.filter(Book.title.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
+
         books = pagination.items
 
         return render_template('search_result.html', pagination=pagination, books=books, keyword=keyword, type=type)
