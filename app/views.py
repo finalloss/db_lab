@@ -19,29 +19,37 @@ def index():
 
 
 # 返回查询结果，即对应图书信息
-@app.route('/search/result/<keyword>', methods=['GET', 'POST'])
-def search_result(keyword):
+@app.route('/search/result/<keyword>/<type>', methods=['GET', 'POST'])
+def search_result(keyword, type):
     # 分页
     page = request.args.get('page', default=1, type=int)
-    pagination = Book.query.filter(Book.title.like('%' + str(keyword) + '%')).order_by(Book.id)\
-            .paginate(page, per_page=5, error_out=False)
+    print(request.form.get('type'))
+
+    if type != "书籍类型":
+        type = request.form.get('type')
+        pagination = Book.query.filter(and_(Book.title.like('%' + str(keyword) + '%'), Book.type==type)).paginate(page, per_page=5, error_out=False)
+    else:
+        pagination = Book.query.filter(Book.title.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
+
     books = pagination.items
 
     if request.method == 'POST':
         # 分页
         keyword = request.form['keyword']
+        if keyword == '':
+            keyword = '_'
+
+        page = request.args.get('page', default=1, type=int)
         if request.form.get('type') != "书籍类型":
             type = request.form.get('type')
             pagination = Book.query.filter(and_(Book.title.like('%' + str(keyword) + '%'), Book.type==type)).paginate(page, per_page=5, error_out=False)
         else:
             pagination = Book.query.filter(Book.title.like('%' + str(keyword) + '%')).paginate(page, per_page=5, error_out=False)
-
-        page = request.args.get('page', default=1, type=int)
         books = pagination.items
 
-        return render_template('search_result.html', pagination=pagination, books=books, keyword=keyword)
+        return render_template('search_result.html', pagination=pagination, books=books, keyword=keyword, type=type)
     else:
-        return render_template('search_result.html', pagination=pagination, books=books, keyword=keyword)
+        return render_template('search_result.html', pagination=pagination, books=books, keyword=keyword, type=type)
 
 
 # 处理登录
@@ -161,6 +169,7 @@ def book_book(book_id, borrower_id):
         flash('不能重复预约！')
     else:    
         book.total = book.total - 1
+        book.id_borrower = borrower_id
         db.session.add(booking_record)
         db.session.commit()
         flash('booking successfully')
@@ -178,6 +187,7 @@ def unbook(book_id, borrower_id):
     else:
         booking_record = Booking_record.query.get((borrower_id, book_id))
         book.total = book.total + 1
+        book.id_borrower = None
         db.session.delete(booking_record)
         db.session.commit()
         flash('unbooking successfully')

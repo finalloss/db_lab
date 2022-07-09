@@ -1,9 +1,7 @@
 flask==1.1.4
-python-dotenv
 flask-login
 flask-sqlalchemy
-flask-migrate
-coverage
 werkzeug==1.0.1
 markupsafe==2.0.1
 pymysql
+python-dotenv

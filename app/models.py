@@ -10,6 +10,7 @@ class Book(db.Model):
     __tablename__ = 'Book'
 
     id = db.Column(db.Integer, primary_key=True)  # 图书编号，主键
+
     title = db.Column(db.String(100), nullable=False)  # 书名
     author = db.Column(db.String(80), nullable=False)  # 作者
     total = db.Column(db.Integer, nullable=False)  # 书的数量
@@ -18,6 +19,7 @@ class Book(db.Model):
     img_name = db.Column(db.String(128), default='default_img.jpg')
     subarea_shelf = db.Column(db.String(50))  # 分区-书架号
     
+    id_borrower = db.Column(db.Integer, db.ForeignKey('Borrower.id')) # 借阅人id
 
     def __repr__(self):
         return 'Book: %r' % self.title
@@ -27,6 +29,7 @@ class Admin(db.Model, UserMixin):
     __tablename__ = 'Admin'
 
     id = db.Column(db.Integer, primary_key=True)    # id
+
     name = db.Column(db.String(30), unique=True, nullable=False) # 姓名
     # email = db.Column(db.String(50), primary_key=True)  # email
     # phone = db.Column(db.String(20), unique=True)  # 电话
@@ -51,6 +54,7 @@ class Borrower(db.Model, UserMixin):
     __tablename__ = 'Borrower'
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)    # id
+
     email=db.Column(db.String(50), unique=True)  # 邮箱号
     ID_number = db.Column(db.String(20), unique=True, nullable=False)  # 身份证号
     name = db.Column(db.String(30), nullable=False) # 姓名
@@ -75,23 +79,19 @@ class Borrower(db.Model, UserMixin):
 
 class Borrowing_record(db.Model):
     __tablename__ = 'Borrowing_record'
+
     id_borrower = db.Column(db.Integer, db.ForeignKey('Borrower.id'), primary_key=True) # 借阅人id
     id_book = db.Column(db.Integer, db.ForeignKey('Book.id'), primary_key=True) # 图书号
+
     borrowing_date = db.Column(db.Date, default=date.today()) # 借阅时间
     returning_date = db.Column(db.Date, default=date.today()+timedelta(days=21))  # 还书时间
 
 
 class Booking_record(db.Model):
     __tablename__ = 'Booking_record'
+
     id_borrower = db.Column(db.Integer, db.ForeignKey('Borrower.id'), primary_key=True) # 借阅人id
     id_book = db.Column(db.Integer, db.ForeignKey('Book.id'), primary_key=True) # 图书号
+
     booking_date= db.Column(db.Date, default=date.today(), nullable=False) # 预约日期
     borrowing_date = db.Column(db.Date, default=date.today()+timedelta(days=5), nullable=False) # 应借书的日期
-
-
-# class Borrowing_card(db.Model):
-#     id = db.Column(db.Integer, primary_key=True) # 借阅证号，主键
-#     status = db.Column(db.Boolean, nullable=False)  # 借阅证状态
-#     number_of_viola = db.Column(db.Integer, nullable=False) # 违约次数
-# 
-#     id_borrower = db.Column(db.Integer, db.ForeignKey('borrower.id'), nullable=False) # 借阅人号

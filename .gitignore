@@ -8,5 +8,5 @@ htmlcov/
 .coverage
 venv
 env
-app/static
 .flaskenv
+app/static

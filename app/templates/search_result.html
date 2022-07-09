@@ -37,7 +37,7 @@
 
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('search_result', keyword='_') }}">book</a>
+                    <a class="nav-link" href="{{ url_for('search_result', keyword='_', type='书籍类型') }}">book</a>
                 </li>
             </ul>
 
@@ -76,15 +76,14 @@
                     <h3 class="panel-title">图书馆藏<span class="glyphicon glyphicon-book pull-right"></span></h3>
                     <!--pull-right为向右浮动，同理pull-left向左浮动-->
                 </div>
-                <div class="panel-body">
+
+		<div class="panel-body">
                     <div class="row">
-                        <div class="col-lg-4">
+                        <div class="col-lg-8">
                             <div class="input-group">
                                 <form class="d-flex" method="post">
-                                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
- 
-                       <div class="col-lg-4">
-                            <div class="input-group mb-3">
+                                    <input class="form-control"  style="width:50 px" type="search" placeholder="Search" aria-label="Search" name="keyword">
+                            <div class="input-group ">
                                 <label class="input-group-text">分类</label>
                                 <select class="form-select" name="type">
                                     <option selected>书籍类型</option>
@@ -95,7 +94,6 @@
                                     <option>历史</option>
                                 </select>
                             </div>
-                        </div><!-- /.col-lg-6 -->
 
                                     <button class="btn btn-outline-success" type="submit">Search</button>
                                 </form>
@@ -170,7 +168,7 @@
                         </table>
                         <div class="col-sm-offset-9">
                             <div class="pagination">
-                                {{ macros.pagination_widget(pagination, '.search_result', keyword=keyword) }}
+                                {{ macros.pagination_widget(pagination, '.search_result', keyword=keyword, type=type) }}
                             </div>
                             </nav>
                         </div>
